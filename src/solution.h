@@ -34,4 +34,7 @@ void free_solution(Solution *solution);
 // r0: 0 -> 1 -> 2 -> ... -> n-1 -> 0
 void set_arbitrary_configuration(Solution *solution);
 
+double calculate_cost(Solution *solution);
+
+
 #endif // _SOLUTION_H
