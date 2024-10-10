@@ -24,7 +24,7 @@ void free_solution(Solution *solution)
 
 void set_arbitrary_configuration(Solution *solution)
 {
-    for (size_t i = 1; i < solution->instance->n; ++i)
+    for (Node i = 1; i < solution->instance->n; ++i)
     {
         solution->next[i] = i + 1;
         solution->prev[i] = i - 1;
@@ -42,7 +42,7 @@ double calculate_cost(Solution *solution)
     {
         int current_capacity = solution->instance->q;
 
-        size_t node = solution->route[j];
+        Node node = solution->route[j];
 
         cost += solution->instance->cost[0][node];
         while (node != 0)
