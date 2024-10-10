@@ -7,6 +7,10 @@
 #include "instance.h"
 
 
+// Penalty for k0 different than k.
+#define P1 1e9
+
+
 typedef struct
 {
     Instance *instance;
@@ -21,5 +25,13 @@ typedef struct
     // Number of routes in the solution.
     size_t k0;
 } Solution;
+
+Solution *load_solution(Instance *instance);
+
+void free_solution(Solution *solution);
+
+// Set a configuration like this:
+// r0: 0 -> 1 -> 2 -> ... -> n-1 -> 0
+void set_arbitrary_configuration(Solution *solution);
 
 #endif // _SOLUTION_H
