@@ -30,3 +30,23 @@ void set_arbitrary_configuration(Solution *solution)
     solution->route[0] = 1;
     solution->k0 = 1;
 }
+
+double calculate_cost(Solution *solution)
+{
+    double cost = 0.0;
+
+    for (size_t j = 0; j < solution->k0; ++j)
+    {
+        size_t node = solution->route[j];
+        cost += solution->instance->cost[0][node];
+        while (node != 0)
+        {
+            cost += solution->instance->cost[node][solution->next[node]];
+            node = solution->next[node];
+        }
+    }
+
+    cost += P1 * abs((int)solution->instance->k - (int)solution->k0);
+
+    return cost;
+}
