@@ -21,6 +21,9 @@ typedef struct
     // `next[i]`: node that node `i` is connected to.
     size_t *next;
 
+    // `prev[i]`: node that connects node `i`.
+    size_t *prev;
+
     // `route[j]`: first node in the `j`-th route (it's also one of the `k0`
     // nodes that the depot connects).
     size_t *route;
