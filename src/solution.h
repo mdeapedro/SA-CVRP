@@ -13,20 +13,22 @@
 // Penalty for route exceeding vehicle capacity.
 #define P2 1e9
 
+typedef size_t Node;
+
 
 typedef struct
 {
     Instance *instance;
 
     // `next[i]`: node that node `i` is connected to.
-    size_t *next;
+    Node *next;
 
     // `prev[i]`: node that connects node `i`.
-    size_t *prev;
+    Node *prev;
 
     // `route[j]`: first node in the `j`-th route (it's also one of the `k0`
     // nodes that the depot connects).
-    size_t *route;
+    Node *route;
 
     // Number of routes in the solution.
     size_t k0;
