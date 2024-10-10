@@ -37,13 +37,19 @@ double calculate_cost(Solution *solution)
 
     for (size_t j = 0; j < solution->k0; ++j)
     {
+        int current_capacity = solution->instance->q;
+
         size_t node = solution->route[j];
+
         cost += solution->instance->cost[0][node];
         while (node != 0)
         {
             cost += solution->instance->cost[node][solution->next[node]];
+            current_capacity -= solution->instance->demand[node];
             node = solution->next[node];
         }
+
+        cost += P2 * (current_capacity < 0);
     }
 
     cost += P1 * abs((int)solution->instance->k - (int)solution->k0);

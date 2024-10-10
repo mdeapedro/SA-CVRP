@@ -10,6 +10,9 @@
 // Penalty for k0 different than k.
 #define P1 1e9
 
+// Penalty for route exceeding vehicle capacity.
+#define P2 1e9
+
 
 typedef struct
 {
