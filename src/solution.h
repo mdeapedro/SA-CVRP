@@ -44,5 +44,7 @@ void set_arbitrary_configuration(Solution *solution);
 
 double calculate_cost(Solution *solution);
 
+void split(Solution *solution, Node node_a, Node node_b);
+
 
 #endif // _SOLUTION_H
