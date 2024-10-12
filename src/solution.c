@@ -60,18 +60,14 @@ double calculate_cost(Solution *solution)
     return cost;
 }
 
-void split(Solution *solution, Node node_a, Node node_b)
+void split(Solution *solution, Node node)
 {
     if (
-        node_a == 0 ||
-        node_b == 0 ||
-        node_a == node_b ||
-        solution->next[node_a] == node_b
+        node == 0 ||
+        solution->next[node] == 0
     ) return;
 
-    solution->prev[solution->next[node_a]] = 0;
-    solution->route[solution->k0++] = solution->next[node_a];
-    solution->next[node_a] = node_b;
-    solution->next[solution->prev[node_b]] = 0;
-    solution->prev[node_b] = node_a;
+    solution->prev[solution->next[node]] = 0;
+    solution->route[solution->k0++] = solution->next[node];
+    solution->next[node] = 0;
 }

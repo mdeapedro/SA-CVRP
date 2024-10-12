@@ -44,13 +44,11 @@ void set_arbitrary_configuration(Solution *solution);
 
 double calculate_cost(Solution *solution);
 
-// Connects `node_a` to `node_b` creating a new route.
+// Split `node`-`next[node]` route.
 // It does nothing if:
-// 1. `node_a` == 0 or
-// 2. `node_b` == 0 or
-// 3. `node_a` == `node_b` or
-// 4. `next[node_a]` == node_b.
-void split(Solution *solution, Node node_a, Node node_b);
+// 1. `node` == 0 or
+// 2. `next[node]` == 0.
+void split(Solution *solution, Node node);
 
 
 #endif // _SOLUTION_H
