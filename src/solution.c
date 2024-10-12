@@ -71,3 +71,33 @@ void split(Solution *solution, Node node)
     solution->route[solution->k0++] = solution->next[node];
     solution->next[node] = 0;
 }
+
+// Runs in O(n).
+// May be improved by using memoization.
+Node _get_route_tail(Solution *solution, size_t route_j)
+{
+    Node node = solution->route[route_j];
+    while (solution->next[node] != 0)
+    {
+        node = solution->next[node];
+    }
+
+    return node;
+}
+
+void join(Solution *solution, size_t route_a, size_t route_b)
+{
+    if (
+        route_a == route_b ||
+        route_a >= solution->k0 ||
+        route_b >= solution->k0
+    ) return;
+
+    Node node_a = _get_route_tail(solution, route_a);
+    Node node_b = solution->route[route_b];
+
+    solution->next[node_a] = node_b;
+    solution->prev[node_b] = node_a;
+
+    solution->route[route_b] = solution->route[--solution->k0];
+}

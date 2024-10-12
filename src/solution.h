@@ -50,5 +50,10 @@ double calculate_cost(Solution *solution);
 // 2. `next[node]` == 0.
 void split(Solution *solution, Node node);
 
+// It does nothing if:
+// 1. `route_a` == `route_b`
+// 2. `route_a`, `route_b` >= `k0`
+void join(Solution *solution, size_t route_a, size_t route_b);
+
 
 #endif // _SOLUTION_H
