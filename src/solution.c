@@ -85,6 +85,11 @@ Node _get_route_tail(Solution *solution, size_t route_j)
     return node;
 }
 
+void _delete_route(Solution *solution, size_t route_j)
+{
+    solution->route[route_j] = solution->route[--solution->k0];
+}
+
 void join(Solution *solution, size_t route_a, size_t route_b)
 {
     if (
@@ -99,5 +104,37 @@ void join(Solution *solution, size_t route_a, size_t route_b)
     solution->next[node_a] = node_b;
     solution->prev[node_b] = node_a;
 
-    solution->route[route_b] = solution->route[--solution->k0];
+    _delete_route(solution, route_b);
+}
+
+// Time complexity may be improved.
+// It's guaranteed that `node` is the beginning of a route.
+size_t _find_node_route(Solution *solution, Node node)
+{
+    size_t j = 0;
+    for (; j < solution->k0 && solution->route[j] != node; ++j);
+
+    return j;
+}
+
+void steal(Solution *solution, Node node_a, Node node_b)
+{
+    if (
+        node_a == 0 ||
+        node_b == 0
+    ) return;
+
+    if (
+        solution->prev[node_b] == 0 &&
+        solution->next[node_b] == 0
+    ) _delete_route(solution, _find_node_route(solution, node_b));
+
+    solution->next[solution->prev[node_b]] = solution->next[node_b];
+    solution->prev[solution->next[node_b]] = solution->prev[node_b];
+
+    solution->next[node_b] = solution->next[node_a];
+    solution->prev[solution->next[node_a]] = node_b;
+
+    solution->next[node_a] = node_b;
+    solution->prev[node_b] = node_a;
 }

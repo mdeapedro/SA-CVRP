@@ -55,5 +55,11 @@ void split(Solution *solution, Node node);
 // 2. `route_a`, `route_b` >= `k0`
 void join(Solution *solution, size_t route_a, size_t route_b);
 
+// Connect `node_a` to `node_b`.
+// It does nothing if:
+// 1. `node_a` == 0 or
+// 2. `node_b` == 0.
+void steal(Solution *solution, Node node_a, Node node_b);
+
 
 #endif // _SOLUTION_H
