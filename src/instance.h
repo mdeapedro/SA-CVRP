@@ -4,6 +4,8 @@
 
 typedef struct
 {
+    char *filename;
+
     // Number of nodes.
     size_t n;
 

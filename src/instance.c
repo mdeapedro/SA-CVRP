@@ -46,6 +46,8 @@ Instance *load_instance(const char *filename)
 
     fclose(file);
 
+    instance->filename = (char *)filename;
+
     return instance;
 }
 
