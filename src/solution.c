@@ -90,7 +90,7 @@ void _delete_route(Solution *solution, size_t route_j)
     solution->route[route_j] = solution->route[--solution->k0];
 }
 
-void join(Solution *solution, size_t route_a, size_t route_b)
+void merge(Solution *solution, size_t route_a, size_t route_b)
 {
     if (
         route_a == route_b ||
