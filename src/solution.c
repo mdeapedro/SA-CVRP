@@ -130,16 +130,29 @@ int steal(Solution *solution, Node node_a, Node node_b)
 {
     if (
         node_a == node_b ||
-        node_b == 0
+        node_b == 0 ||
+        solution->prev[node_b] == node_a
     ) return 0;
 
-    if (
-        solution->prev[node_b] == 0 &&
-        solution->next[node_b] == 0
-    ) _delete_route(solution, _find_node_route(solution, node_b));
+    if (solution->prev[node_b] == 0)
+    {
+        int node_b_route = _find_node_route(solution, node_b);
 
-    solution->next[solution->prev[node_b]] = solution->next[node_b];
-    solution->prev[solution->next[node_b]] = solution->prev[node_b];
+        if (solution->next[node_b] == 0)
+        {
+            _delete_route(solution, node_b_route);
+        }
+        else
+        {
+            solution->route[node_b_route] = solution->next[node_b];
+            solution->prev[solution->next[node_b]] = 0;
+        }
+    }
+    else
+    {
+        solution->next[solution->prev[node_b]] = solution->next[node_b];
+        solution->prev[solution->next[node_b]] = solution->prev[node_b];
+    }
 
     if (node_a == 0)
     {
