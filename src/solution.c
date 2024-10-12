@@ -60,16 +60,18 @@ double calculate_cost(Solution *solution)
     return cost;
 }
 
-void split(Solution *solution, Node node)
+int split(Solution *solution, Node node)
 {
     if (
         node == 0 ||
         solution->next[node] == 0
-    ) return;
+    ) return 0;
 
     solution->prev[solution->next[node]] = 0;
     solution->route[solution->k0++] = solution->next[node];
     solution->next[node] = 0;
+
+    return 1;
 }
 
 // Runs in O(n).
@@ -90,13 +92,13 @@ void _delete_route(Solution *solution, size_t route_j)
     solution->route[route_j] = solution->route[--solution->k0];
 }
 
-void merge(Solution *solution, size_t route_a, size_t route_b)
+int merge(Solution *solution, size_t route_a, size_t route_b)
 {
     if (
         route_a == route_b ||
         route_a >= solution->k0 ||
         route_b >= solution->k0
-    ) return;
+    ) return 0;
 
     Node node_a = _get_route_tail(solution, route_a);
     Node node_b = solution->route[route_b];
@@ -105,6 +107,8 @@ void merge(Solution *solution, size_t route_a, size_t route_b)
     solution->prev[node_b] = node_a;
 
     _delete_route(solution, route_b);
+
+    return 1;
 }
 
 // Time complexity may be improved.
@@ -117,12 +121,12 @@ size_t _find_node_route(Solution *solution, Node node)
     return j;
 }
 
-void steal(Solution *solution, Node node_a, Node node_b)
+int steal(Solution *solution, Node node_a, Node node_b)
 {
     if (
         node_a == 0 ||
         node_b == 0
-    ) return;
+    ) return 0;
 
     if (
         solution->prev[node_b] == 0 &&
@@ -137,4 +141,6 @@ void steal(Solution *solution, Node node_a, Node node_b)
 
     solution->next[node_a] = node_b;
     solution->prev[node_b] = node_a;
+
+    return 1;
 }

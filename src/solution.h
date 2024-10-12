@@ -48,18 +48,18 @@ double calculate_cost(Solution *solution);
 // It does nothing if:
 // 1. `node` == 0 or
 // 2. `next[node]` == 0.
-void split(Solution *solution, Node node);
+int split(Solution *solution, Node node);
 
 // It does nothing if:
 // 1. `route_a` == `route_b`
 // 2. `route_a`, `route_b` >= `k0`
-void merge(Solution *solution, size_t route_a, size_t route_b);
+int merge(Solution *solution, size_t route_a, size_t route_b);
 
 // Connect `node_a` to `node_b`.
 // It does nothing if:
 // 1. `node_a` == 0 or
 // 2. `node_b` == 0.
-void steal(Solution *solution, Node node_a, Node node_b);
+int steal(Solution *solution, Node node_a, Node node_b);
 
 
 #endif // _SOLUTION_H
