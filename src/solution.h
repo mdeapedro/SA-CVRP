@@ -57,7 +57,7 @@ int merge(Solution *solution, size_t route_a, size_t route_b);
 
 // Connect `node_a` to `node_b`.
 // It does nothing if:
-// 1. `node_a` == 0 or
+// 1. `node_a` == `node_b` or
 // 2. `node_b` == 0.
 int steal(Solution *solution, Node node_a, Node node_b);
 

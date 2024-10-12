@@ -87,9 +87,14 @@ Node _get_route_tail(Solution *solution, size_t route_j)
     return node;
 }
 
-void _delete_route(Solution *solution, size_t route_j)
+static inline void _delete_route(Solution *solution, size_t route_j)
 {
     solution->route[route_j] = solution->route[--solution->k0];
+}
+
+static inline void _create_route(Solution *solution, Node node)
+{
+    solution->route[solution->k0++] = node;
 }
 
 int merge(Solution *solution, size_t route_a, size_t route_b)
@@ -124,7 +129,7 @@ size_t _find_node_route(Solution *solution, Node node)
 int steal(Solution *solution, Node node_a, Node node_b)
 {
     if (
-        node_a == 0 ||
+        node_a == node_b ||
         node_b == 0
     ) return 0;
 
@@ -135,6 +140,16 @@ int steal(Solution *solution, Node node_a, Node node_b)
 
     solution->next[solution->prev[node_b]] = solution->next[node_b];
     solution->prev[solution->next[node_b]] = solution->prev[node_b];
+
+    if (node_a == 0)
+    {
+        solution->next[node_b] = 0;
+        solution->prev[node_b] = 0;
+
+        _create_route(solution, node_b);
+
+        return 1;
+    }
 
     solution->next[node_b] = solution->next[node_a];
     solution->prev[solution->next[node_a]] = node_b;
