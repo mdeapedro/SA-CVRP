@@ -76,7 +76,7 @@ int split(Solution *solution, Node node)
 
 // Runs in O(n).
 // May be improved by using memoization.
-Node _get_route_tail(Solution *solution, size_t route_j)
+static Node _get_route_tail(Solution *solution, size_t route_j)
 {
     Node node = solution->route[route_j];
     while (solution->next[node] != 0)
