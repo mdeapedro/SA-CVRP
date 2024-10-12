@@ -1,173 +1,93 @@
 #include "solution.h"
+#include "stdio.h"
 
 
 Solution *load_solution(Instance *instance)
 {
     Solution *solution = malloc(sizeof(Solution));
-    solution->next = malloc(instance->n * sizeof(Node));
-    solution->prev = malloc(instance->n * sizeof(Node));
-    solution->route = malloc(instance->n * sizeof(Node));
+
+    solution->routes = malloc(instance->k * sizeof(Node *));
+    for (size_t i = 0; i < instance->k; ++i)
+    {
+        solution->routes[i] = malloc(instance->n * sizeof(Node));
+    }
+
+    solution->k0 = malloc(instance->k * sizeof(size_t));
 
     solution->instance = instance;
-    solution->k0 = 0;
 
     return solution;
 }
 
 void free_solution(Solution *solution)
 {
-    free(solution->route);
-    free(solution->prev);
-    free(solution->next);
+    free(solution->k0);
+    for (size_t i = 0; i < solution->instance->k; ++i)
+    {
+        free(solution->routes[i]);
+    }
+    free(solution->routes);
     free(solution);
 }
 
 void set_arbitrary_configuration(Solution *solution)
 {
-    for (Node i = 1; i < solution->instance->n; ++i)
+    size_t nodes_per_route = (solution->instance->n - 1) / solution->instance->k;
+    for (size_t i = 0; i < solution->instance->k; ++i)
     {
-        solution->next[i] = i + 1;
-        solution->prev[i] = i - 1;
+        for (Node j = 0; j < nodes_per_route; ++j)
+        {
+            solution->routes[i][j] = j + i * nodes_per_route + 1;
+        }
+        solution->k0[i] = nodes_per_route;
     }
-    solution->next[solution->instance->n - 1] = 0;
-    solution->route[0] = 1;
-    solution->k0 = 1;
+    size_t nodes_remaining = solution->instance->n - 1 - (nodes_per_route * solution->instance->k);
+    for (Node j = 0; j < nodes_remaining; j++)
+    {
+        solution->routes[solution->instance->k - 1][nodes_per_route + j] = solution->instance->n - nodes_remaining + j;
+        ++solution->k0[solution->instance->k - 1];
+    }
 }
 
 double calculate_cost(Solution *solution)
 {
     double cost = 0.0;
 
-    for (size_t j = 0; j < solution->k0; ++j)
+    for (size_t i = 0; i < solution->instance->k; ++i)
     {
         int current_capacity = solution->instance->q;
 
-        Node node = solution->route[j];
-
-        cost += solution->instance->cost[0][node];
-        while (node != 0)
+        cost += solution->instance->cost[0][solution->routes[i][0]];
+        for (size_t j = 0; j < solution->k0[i] - 1; ++j)
         {
-            cost += solution->instance->cost[node][solution->next[node]];
-            current_capacity -= solution->instance->demand[node];
-            node = solution->next[node];
+            cost += solution->instance->cost[solution->routes[i][j]][solution->routes[i][j + 1]];
+            current_capacity -= solution->instance->demand[solution->routes[i][j]];
         }
+        cost += solution->instance->cost[solution->routes[i][solution->k0[i] - 1]][0];
+        current_capacity -= solution->instance->demand[solution->routes[i][solution->k0[i] - 1]];
 
-        cost += P2 * (current_capacity < 0);
+        cost += P1 * (current_capacity < 0);
     }
-
-    cost += P1 * abs((int)solution->instance->k - (int)solution->k0);
 
     return cost;
 }
 
-int split(Solution *solution, Node node)
+void insert_node(Solution *solution, Node node, size_t i, size_t j)
 {
-    if (
-        node == 0 ||
-        solution->next[node] == 0
-    ) return 0;
-
-    solution->prev[solution->next[node]] = 0;
-    solution->route[solution->k0++] = solution->next[node];
-    solution->next[node] = 0;
-
-    return 1;
-}
-
-// Runs in O(n).
-// May be improved by using memoization.
-static Node _get_route_tail(Solution *solution, size_t route_j)
-{
-    Node node = solution->route[route_j];
-    while (solution->next[node] != 0)
+    for (size_t l = solution->k0[i]; l > j; --l)
     {
-        node = solution->next[node];
+        solution->routes[i][l] = solution->routes[i][l - 1];
     }
+    ++solution->k0[i];
 
-    return node;
+    solution->routes[i][j] = node;
 }
 
-static inline void _delete_route(Solution *solution, size_t route_j)
+void delete_node(Solution *solution, size_t i, size_t j)
 {
-    solution->route[route_j] = solution->route[--solution->k0];
-}
-
-static inline void _create_route(Solution *solution, Node node)
-{
-    solution->route[solution->k0++] = node;
-}
-
-int merge(Solution *solution, size_t route_a, size_t route_b)
-{
-    if (
-        route_a == route_b ||
-        route_a >= solution->k0 ||
-        route_b >= solution->k0
-    ) return 0;
-
-    Node node_a = _get_route_tail(solution, route_a);
-    Node node_b = solution->route[route_b];
-
-    solution->next[node_a] = node_b;
-    solution->prev[node_b] = node_a;
-
-    _delete_route(solution, route_b);
-
-    return 1;
-}
-
-// Time complexity may be improved.
-// It's guaranteed that `node` is the beginning of a route.
-size_t _find_node_route(Solution *solution, Node node)
-{
-    size_t j = 0;
-    for (; j < solution->k0 && solution->route[j] != node; ++j);
-
-    return j;
-}
-
-int steal(Solution *solution, Node node_a, Node node_b)
-{
-    if (
-        node_a == node_b ||
-        solution->prev[node_b] == node_a
-    ) return 0;
-
-    if (solution->prev[node_b] == 0)
+    --solution->k0[i];
+    for (size_t l = j; l < solution->k0[i]; ++l)
     {
-        int node_b_route = _find_node_route(solution, node_b);
-
-        if (solution->next[node_b] == 0)
-        {
-            _delete_route(solution, node_b_route);
-        }
-        else
-        {
-            solution->route[node_b_route] = solution->next[node_b];
-            solution->prev[solution->next[node_b]] = 0;
-        }
+        solution->routes[i][l] = solution->routes[i][l + 1];
     }
-    else
-    {
-        solution->next[solution->prev[node_b]] = solution->next[node_b];
-        solution->prev[solution->next[node_b]] = solution->prev[node_b];
-    }
-
-    if (node_a == 0)
-    {
-        solution->next[node_b] = 0;
-        solution->prev[node_b] = 0;
-
-        _create_route(solution, node_b);
-
-        return 1;
-    }
-
-    solution->next[node_b] = solution->next[node_a];
-    solution->prev[solution->next[node_a]] = node_b;
-
-    solution->next[node_a] = node_b;
-    solution->prev[node_b] = node_a;
-
-    return 1;
 }
