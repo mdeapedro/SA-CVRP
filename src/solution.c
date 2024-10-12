@@ -130,7 +130,6 @@ int steal(Solution *solution, Node node_a, Node node_b)
 {
     if (
         node_a == node_b ||
-        node_b == 0 ||
         solution->prev[node_b] == node_a
     ) return 0;
 

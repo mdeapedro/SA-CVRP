@@ -55,11 +55,10 @@ int split(Solution *solution, Node node);
 // 2. `route_a`, `route_b` >= `k0`
 int merge(Solution *solution, size_t route_a, size_t route_b);
 
-// Connect `node_a` to `node_b`.
+// Connect `node_a` to `node_b` (`node_b` > 0).
 // It does nothing if:
 // 1. `node_a` == `node_b` or
-// 2. `node_b` == `next[node_a]` or
-// 3. `node_b` == 0.
+// 2. `node_b` == `next[node_a]`.
 int steal(Solution *solution, Node node_a, Node node_b);
 
 
