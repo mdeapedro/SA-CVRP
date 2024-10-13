@@ -28,6 +28,8 @@ Solution *load_solution(Instance *instance);
 
 void free_solution(Solution *solution);
 
+void set_configuration(Solution *solution, Node **routes, size_t *k0);
+
 // Set a configuration like this:
 // r1: 0 -> 1 -> 2 -> ... -> n/k -> 0
 // r2: 0 -> n/k+1 -> ... -> 2n/k -> 0

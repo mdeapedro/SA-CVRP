@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "solution.h"
 #include "stdio.h"
 
@@ -28,6 +30,15 @@ void free_solution(Solution *solution)
     }
     free(solution->routes);
     free(solution);
+}
+
+void set_configuration(Solution *solution, Node **routes, size_t *k0)
+{
+    for (size_t i = 0; i < solution->instance->k; ++i)
+    {
+        memcpy(solution->routes[i], routes[i], k0[i] * sizeof(Node));
+    }
+    memcpy(solution->k0, k0, solution->instance->k * sizeof(size_t));
 }
 
 void set_arbitrary_configuration(Solution *solution)
