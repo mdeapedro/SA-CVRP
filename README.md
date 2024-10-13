@@ -42,3 +42,9 @@ Where:
 - $w_j \ge 0$ is `float`;
 - each customer is represented by an integer in $1, \ldots, n$;
 - the depot is represented by $0$.
+
+## Usage
+
+```sh
+sa_cvrp instance_filename
+```
