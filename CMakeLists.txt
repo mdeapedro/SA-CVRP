@@ -5,6 +5,14 @@ set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED True)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/out/bin)
 
-add_executable(sa_cvrp src/main.c)
+add_executable(
+    sa_cvrp
+    src/main.c
+    src/instance.c
+    src/solution.c
+    src/sa.c
+)
 
 target_compile_options(sa_cvrp PRIVATE -Wall -Wextra)
+
+target_link_libraries(sa_cvrp m)
