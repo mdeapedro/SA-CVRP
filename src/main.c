@@ -7,12 +7,20 @@
 
 int main(int argc, char **argv)
 {
-    if (argc < 2) return 1;
+    if (argc < 3) return 1;
 
     Instance *instance = load_instance(argv[1]);
     if (!instance) return 1;
 
-    InputParameters ip = { instance, 10, time(NULL) };
+    char *suceeded = argv[2];
+    unsigned int time_limit_seconds = strtoul(argv[2], &suceeded, 10);
+
+    if (suceeded == argv[2]) {
+        printf("time_limit_seconds input error.");
+        return 1;
+    }
+
+    InputParameters ip = { instance, time_limit_seconds, time(NULL) };
     OutputParameters op = { stdout };
     SA_Parameters sap = { 0.99999, 1.0 };
 
