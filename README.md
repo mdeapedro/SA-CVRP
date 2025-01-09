@@ -46,5 +46,5 @@ Where:
 ## Usage
 
 ```sh
-sa_cvrp instance_filename
+sa_cvrp instance_filename time_limit_seconds
 ```
